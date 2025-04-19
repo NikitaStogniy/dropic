@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Игра "Дропик VS Импортозамещение"
 
-## Getting Started
+Простая браузерная игра в ретро-стиле с маскотом интернет-магазина.
 
-First, run the development server:
+## О игре
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+В игре "Дропик VS Импортозамещение" вы управляете маскотом, который движется за курсором мыши. Цель игры - собирать падающие хорошие предметы (зеленые с галочкой) и избегать плохих предметов (красные с крестиком). У вас есть 3 жизни, за каждый хороший предмет вы получаете 10 очков, а за каждый плохой - теряете одну жизнь.
+
+## Как играть
+
+1. Откройте `index.html` в вашем браузере
+2. Введите свой никнейм (до 5 символов)
+3. Нажмите кнопку "НАЧАТЬ ИГРУ"
+4. Перемещайте маскот с помощью мыши, чтобы собирать хорошие предметы и избегать плохие
+5. Игра заканчивается, когда у вас не осталось жизней
+6. Ваш результат будет добавлен в таблицу лидеров
+
+## Особенности
+
+- Маскот следует за курсором мыши
+- Маскот меняет выражение лица, когда предметы приближаются
+- Таблица лидеров, сохраняющая лучшие результаты
+- Эффект старого телевизора (CRT фильтр)
+- Визуальные эффекты при сборе и пропуске предметов
+
+## Технические детали
+
+Игра написана на чистом JavaScript, HTML и CSS без использования внешних библиотек. Для работы достаточно современного браузера с поддержкой ES6.
+
+Таблица лидеров сохраняется в локальном хранилище (localStorage) браузера.
+
+## Настройка
+
+Вы можете настроить поведение игры, изменив константы в начале файла `script.js`:
+
+```javascript
+// --- Settings ---
+const ITEM_SPEED = 3; // Скорость падения предметов
+const ITEM_SPAWN_RATE = 1000; // Частота появления предметов (мс)
+const GOOD_ITEM_CHANCE = 0.7; // Вероятность появления хорошего предмета
+const ITEM_ROTATION_SPEED = 2; // Скорость вращения предметов
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Кастомизация
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Для замены маскота и предметов вы можете:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Заменить SVG файлы: `mascot.svg`, `mascot-interact.svg`, `good-item.svg`, `bad-item.svg`
+2. Настроить внешний вид в файле `style.css`
 
-## Learn More
+## Будущие улучшения
 
-To learn more about Next.js, take a look at the following resources:
+- Добавление звуковых эффектов
+- Интеграция с внешними источниками данных для таблицы лидеров
+- Добавление бонусных предметов с разными эффектами
+- Увеличение сложности с течением времени
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Интеграция с Google Sheets для таблицы лидеров
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Проект поддерживает интеграцию с Google Sheets для хранения таблицы лидеров. Чтобы настроить интеграцию, выполните следующие шаги:
 
-## Deploy on Vercel
+1. **Создайте проект в Google Cloud Console**:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   - Перейдите на [Google Cloud Console](https://console.cloud.google.com/)
+   - Создайте новый проект или выберите существующий
+   - Убедитесь, что у вас включен биллинг (но в пределах бесплатного тира)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Включите Google Sheets API**:
+
+   - В меню слева выберите "API и сервисы" > "Библиотека"
+   - Найдите "Google Sheets API" и нажмите "Включить"
+
+3. **Создайте учетные данные**:
+
+   - В меню слева выберите "API и сервисы" > "Учетные данные"
+   - Нажмите "Создать учетные данные" и выберите "Ключ API" - для публичного доступа
+   - Нажмите "Создать учетные данные" и выберите "Сервисный аккаунт" - для серверного доступа
+
+4. **Настройте сервисный аккаунт**:
+
+   - Создайте новый сервисный аккаунт с любым именем
+   - Предоставьте ему роль "Редактор данных таблиц"
+   - После создания перейдите на вкладку "Ключи" и создайте новый ключ JSON
+   - Скачайте JSON-файл с ключом
+
+5. **Создайте таблицу Google Sheets**:
+
+   - Создайте новую таблицу Google Sheets
+   - Переименуйте первый лист в "Leaderboard"
+   - Добавьте заголовки в первую строку: "Nickname", "Score", "Timestamp"
+   - Предоставьте доступ сервисному аккаунту (поделитесь таблицей с email сервисного аккаунта)
+
+6. **Настройте переменные окружения**:
+
+   - Создайте или отредактируйте файл `.env.local` в корне проекта
+   - Добавьте следующие переменные:
+     ```
+     NEXT_PUBLIC_GOOGLE_SHEET_ID=ID_вашей_таблицы
+     NEXT_PUBLIC_GOOGLE_API_KEY=ваш_API_ключ
+     GOOGLE_SERVICE_ACCOUNT_EMAIL=email_сервисного_аккаунта
+     GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nприватный_ключ\n-----END PRIVATE KEY-----\n"
+     ```
+   - ID таблицы можно найти в URL: `https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit`
+   - Приватный ключ находится в скачанном JSON-файле в поле `private_key`
+
+7. **Перезапустите сервер разработки**:
+   ```bash
+   npm run dev
+   ```
+
+## Примечания по безопасности
+
+- `NEXT_PUBLIC_*` переменные доступны на клиенте, поэтому публичный API ключ должен иметь ограничения по реферерам и API
+- Приватный ключ и email сервисного аккаунта доступны только на сервере через API Routes
+- В продакшене рекомендуется использовать сервис хранения секретов вашего хостинг-провайдера
+
+---
+
+Разработано для демонстрации использования маскота в простой мини-игре.
