@@ -19,6 +19,7 @@ export interface LeaderboardEntry {
 }
 
 class GoogleSheetsService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private sheets: any; // Consider using a more specific type if available from googleapis
   private spreadsheetId: string;
   private range: string;
@@ -88,13 +89,16 @@ class GoogleSheetsService {
       const rows = response.data.values || [];
 
       // Map rows to objects and sort by score descending
-      return rows
-        .map((row: any) => ({
-          nickname: row[0] || "",
-          score: parseInt(row[1]) || 0,
-          timestamp: row[2] || "",
-        }))
-        .sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.score - a.score);
+      return (
+        rows
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .map((row: any) => ({
+            nickname: row[0] || "",
+            score: parseInt(row[1]) || 0,
+            timestamp: row[2] || "",
+          }))
+          .sort((a: LeaderboardEntry, b: LeaderboardEntry) => b.score - a.score)
+      );
     } catch (error) {
       console.error(
         "Error fetching leaderboard data from Google Sheets:",

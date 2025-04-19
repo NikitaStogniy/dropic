@@ -22,7 +22,6 @@ export default function Game() {
   );
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
-  const [nickname, setNickname] = useState("");
   const [finalScore, setFinalScore] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
@@ -73,6 +72,7 @@ export default function Game() {
     // Extract all bubble icons from the imported BrandIcons
     const bubbleIcons = Object.entries(BrandIcons)
       .filter(([key]) => key.startsWith("bubble_"))
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .map(([_, icon]) => icon as React.FC<BrandIcons.IconProps>);
 
     setBrandIcons(bubbleIcons);
@@ -80,6 +80,7 @@ export default function Game() {
     // Extract all wrong icons from the imported WrongIcons
     const badIcons = Object.entries(WrongIcons)
       .filter(([key]) => key.startsWith("wrong_"))
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .map(([_, icon]) => icon as React.FC<BrandIcons.IconProps>);
 
     setWrongIcons(badIcons);
@@ -461,7 +462,6 @@ export default function Game() {
     let currentNickname = inputElement.value.trim().toUpperCase().slice(0, 5);
     if (currentNickname.length === 0) currentNickname = "ANO N"; // Default nickname
 
-    setNickname(currentNickname);
     nicknameRef.current = currentNickname; // Update ref
     setScore(0);
     scoreRef.current = 0; // Sync ref
@@ -534,7 +534,6 @@ export default function Game() {
   const restartGame = () => {
     setGameState("start");
     gameStateRef.current = "start"; // Sync ref
-    setNickname("");
     nicknameRef.current = ""; // Sync ref
     setScore(0);
     scoreRef.current = 0; // Sync ref

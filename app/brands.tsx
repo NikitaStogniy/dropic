@@ -6,8 +6,7 @@ export interface IconProps {
   height?: number;
   fill?: string;
   stroke?: string;
-  onMouseOver?: any;
-  onMouseOut?: any;
+
   disabled?: boolean;
   role?: string;
 }
