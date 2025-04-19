@@ -88,9 +88,10 @@ class GoogleSheetsService {
 
       const rows = response.data.values || [];
 
-      // Map rows to objects and sort by score descending
+      rows.shift();
       return (
         rows
+
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .map((row: any) => ({
             nickname: row[0] || "",

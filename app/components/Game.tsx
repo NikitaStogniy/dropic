@@ -102,7 +102,7 @@ export default function Game() {
   // Effect to check screen size
   useEffect(() => {
     const checkSize = () => {
-      setIsTooSmall(window.innerWidth < 700);
+      setIsTooSmall(window.innerWidth < 700 || window.innerHeight < 700);
     };
 
     checkSize(); // Initial check
