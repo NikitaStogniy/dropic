@@ -34,6 +34,13 @@
   padding: 0 !important;
 }
 
+/* Mobile game screen */
+.mobileGameScreen {
+  touch-action: none; /* Prevent default touch behaviors like scrolling */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .screen h1 {
   margin-bottom: 30px;
   font-size: 2.5em;
@@ -296,5 +303,71 @@
   }
   100% {
     opacity: 0.6;
+  }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .screen h1 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .screen label {
+    font-size: 0.9em;
+  }
+
+  .screen input {
+    font-size: 1.2em;
+    width: 120px;
+    padding: 8px;
+  }
+
+  .screen button {
+    font-size: 1em;
+    padding: 12px 24px;
+  }
+
+  .hud {
+    font-size: 0.8em;
+    padding: 3px 6px;
+  }
+
+  .leaderboard {
+    width: 150px;
+    font-size: 0.6em;
+    max-height: 200px;
+    padding: 8px;
+  }
+
+  .leaderboard h2 {
+    font-size: 0.9em;
+  }
+
+  .mascot {
+    width: 60px;
+    height: 60px;
+  }
+
+  .item {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .screen h1 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+  }
+
+  .hud {
+    font-size: 0.7em;
+  }
+
+  .leaderboard {
+    width: 120px;
+    font-size: 0.5em;
   }
 }
