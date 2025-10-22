@@ -31,6 +31,7 @@ export default function Game() {
   const interactionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isInteractionLockedRef = useRef<boolean>(false);
   const [isTooSmall, setIsTooSmall] = useState(false); // State for screen size check
+  const [isMobile, setIsMobile] = useState(false); // State for mobile device detection
 
   // Refs
   const gameScreenRef = useRef<HTMLDivElement>(null);
@@ -99,10 +100,17 @@ export default function Game() {
     }
   }, []);
 
-  // Effect to check screen size
+  // Effect to check screen size and detect mobile
   useEffect(() => {
     const checkSize = () => {
-      setIsTooSmall(window.innerWidth < 700 || window.innerHeight < 700);
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const mobile = width <= 768 || 'ontouchstart' in window;
+
+      setIsMobile(mobile);
+      // On mobile, don't show "too small" message, just adapt the UI
+      // On desktop, require minimum 700x700
+      setIsTooSmall(!mobile && (width < 700 || height < 700));
     };
 
     checkSize(); // Initial check
@@ -207,12 +215,13 @@ export default function Game() {
     }
   };
 
-  // Handle mascot position based on mouse movement
+  // Handle mascot position based on mouse movement (desktop)
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (
       gameStateRef.current !== "playing" ||
       !mascotRef.current ||
-      !gameScreenRef.current
+      !gameScreenRef.current ||
+      isMobile
     )
       return;
 
@@ -231,6 +240,39 @@ export default function Game() {
       mascotHeight / 2,
       Math.min(y, gameRect.height - mascotHeight / 2)
     );
+
+    mascotRef.current.style.left = `${x - mascotWidth / 2}px`;
+    mascotRef.current.style.top = `${y - mascotHeight / 2}px`;
+
+    checkForInteraction();
+  };
+
+  // Handle mascot position based on touch movement (mobile)
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (
+      gameStateRef.current !== "playing" ||
+      !mascotRef.current ||
+      !gameScreenRef.current ||
+      !isMobile
+    )
+      return;
+
+    event.preventDefault(); // Prevent scrolling
+
+    const touch = event.touches[0];
+    const gameRect = gameScreenRef.current.getBoundingClientRect();
+    let x = touch.clientX - gameRect.left;
+    const mascotWidth = mascotRef.current.offsetWidth;
+    const mascotHeight = mascotRef.current.offsetHeight;
+
+    // Keep mascot within game bounds horizontally
+    x = Math.max(
+      mascotWidth / 2,
+      Math.min(x, gameRect.width - mascotWidth / 2)
+    );
+
+    // Fixed Y position at the bottom
+    const y = gameRect.height - mascotHeight / 2 - 20; // 20px from bottom
 
     mascotRef.current.style.left = `${x - mascotWidth / 2}px`;
     mascotRef.current.style.top = `${y - mascotHeight / 2}px`;
@@ -474,8 +516,21 @@ export default function Game() {
     itemsRef.current.forEach((item) => item?.remove()); // Safety check item
     itemsRef.current = [];
 
-    // Hide cursor during gameplay
-    document.body.style.cursor = "none";
+    // Position mascot at bottom center for mobile, or center for desktop
+    if (isMobile && mascotRef.current && gameScreenRef.current) {
+      const gameRect = gameScreenRef.current.getBoundingClientRect();
+      const mascotWidth = mascotRef.current.offsetWidth || 80;
+      const mascotHeight = mascotRef.current.offsetHeight || 80;
+      const x = gameRect.width / 2;
+      const y = gameRect.height - mascotHeight / 2 - 20;
+      mascotRef.current.style.left = `${x - mascotWidth / 2}px`;
+      mascotRef.current.style.top = `${y - mascotHeight / 2}px`;
+    }
+
+    // Hide cursor during gameplay (only on desktop)
+    if (!isMobile) {
+      document.body.style.cursor = "none";
+    }
 
     // Clear any existing intervals before starting new ones
     if (gameLoopIntervalRef.current) clearInterval(gameLoopIntervalRef.current);
@@ -620,8 +675,10 @@ export default function Game() {
       {gameState === "playing" && (
         <div
           ref={gameScreenRef}
-          className={`${styles.screen} ${styles.gameScreen}`}
+          className={`${styles.screen} ${styles.gameScreen} ${isMobile ? styles.mobileGameScreen : ""}`}
           onMouseMove={handleMouseMove}
+          onTouchMove={handleTouchMove}
+          onTouchStart={handleTouchMove}
           // Optionally add onMouseLeave to reset mascot position or state
           // onMouseLeave={() => setInteractionState(InteractionState.Normal)}
         >
